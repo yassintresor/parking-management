@@ -52,6 +52,7 @@ const createSpace = async (req, res) => {
       hourly_rate
     });
     
+    
     const space = await ParkingSpace.findById(spaceId);
     
     res.status(201).json({
@@ -174,6 +175,22 @@ const updateSpaceStatus = async (req, res) => {
   }
 };
 
+const getAvailableSpacesCount = async (req, res) => {
+  try {
+    const count = await ParkingSpace.getAvailableCount();
+    res.json({
+      success: true,
+      data: { count }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching available spaces count',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   getAllSpaces,
   getSpaceById,
@@ -181,5 +198,6 @@ module.exports = {
   updateSpace,
   deleteSpace,
   getAvailableSpaces,
-  updateSpaceStatus
+  updateSpaceStatus,
+  getAvailableSpacesCount
 };

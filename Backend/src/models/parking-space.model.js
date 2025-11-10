@@ -72,6 +72,15 @@ class ParkingSpace {
       throw error;
     }
   }
+
+  static async getAvailableCount() {
+    try {
+      const [rows] = await db.query('SELECT COUNT(*) as count FROM parking_spaces WHERE status = "AVAILABLE"');
+      return rows[0].count;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = ParkingSpace;

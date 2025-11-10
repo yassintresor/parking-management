@@ -7,11 +7,13 @@ const {
   updateSpace, 
   deleteSpace,
   getAvailableSpaces,
-  updateSpaceStatus
+  updateSpaceStatus,
+  getAvailableSpacesCount
 } = require('../controllers/spaces.controller');
 
 // Public routes
 router.get('/available', getAvailableSpaces);
+router.get('/available/count', getAvailableSpacesCount);
 
 // Admin routes
 router.get('/', auth, checkRole(['ADMIN', 'OPERATOR']), getAllSpaces);
