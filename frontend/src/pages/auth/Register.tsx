@@ -41,13 +41,17 @@ export default function Register() {
     setLoading(true);
 
     try {
+      console.log('Attempting to register user:', { email, name, phone });
       const { error } = await register(email, password, name, phone);
       if (error) {
+        console.error('Registration error:', error);
         setError(error.message || 'Failed to create account');
       } else {
+        console.log('Registration successful');
         navigate('/auth'); // Redirect to login page on success
       }
     } catch (err: any) {
+      console.error('Unexpected error during registration:', err);
       setError(err.message || 'An unexpected error occurred');
     } finally {
       setLoading(false);

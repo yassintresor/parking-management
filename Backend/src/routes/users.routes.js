@@ -3,12 +3,14 @@ const { auth, checkRole } = require('../middlewares/auth.middleware');
 const { 
   getAllUsers, 
   getUserById, 
+  createUser,
   updateUser, 
   deleteUser,
   getUserBookings
 } = require('../controllers/users.controller');
 
 // Admin routes
+router.post('/', auth, checkRole(['ADMIN']), createUser);
 router.get('/', auth, checkRole(['ADMIN']), getAllUsers);
 router.get('/:id', auth, getUserById);
 router.put('/:id', auth, checkRole(['ADMIN']), updateUser);

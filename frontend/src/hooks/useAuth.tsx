@@ -141,19 +141,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const register = async (email: string, password: string, name: string, phone: string) => {
     try {
+      console.log('Registering user with data:', { email, name, phone });
       // Register with backend API only
       const response = await authApi.register({ email, password, name, phone });
+      console.log('Registration API response:', response);
       
       if (response.success) {
         toast.success("Account created successfully! Please sign in.");
         return { error: null };
       } else {
+        console.error('Registration failed:', response.message);
         toast.error(response.message || "Error creating account");
         return { error: response.message };
       }
     } catch (error: any) {
-      toast.error(error.message || "Error during registration");
-      return { error };
+      console.error('Registration error:', error);
+      const errorMessage = error.message || "Error during registration";
+      toast.error(errorMessage);
+      return { error: errorMessage };
     }
   };
 

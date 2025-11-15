@@ -4,10 +4,12 @@ const User = require('../models/user.model');
 const register = async (req, res) => {
   try {
     const { email, password, name, phone } = req.body;
+    console.log('Registration request received:', { email, name, phone });
 
     // Check if user already exists
     const existingUser = await User.findByEmail(email);
     if (existingUser) {
+      console.log('User already exists with email:', email);
       return res.status(400).json({
         success: false,
         message: 'User already exists with this email'
@@ -15,6 +17,7 @@ const register = async (req, res) => {
     }
 
     // Create new user
+    console.log('Creating new user with data:', { email, name, phone });
     const userId = await User.create({
       email,
       password,
@@ -23,6 +26,7 @@ const register = async (req, res) => {
     });
 
     const user = await User.findById(userId);
+    console.log('User created successfully:', user);
 
     // Generate JWT token
     const token = jwt.sign(
@@ -44,10 +48,13 @@ const register = async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Error creating user:', error);
     res.status(500).json({
       success: false,
       message: 'Error creating user',
-      error: error.message
+      error: error.message,
+      // Include stack trace in development
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 };

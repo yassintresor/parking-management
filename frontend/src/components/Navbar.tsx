@@ -49,7 +49,7 @@ const Navbar = () => {
                 variant={isActive("/spaces/available") ? "default" : "ghost"}
                 size="sm"
               >
-                Parking Spots
+                Available Parking
               </Button>
             </Link>
             {user ? (
@@ -82,7 +82,7 @@ const Navbar = () => {
                   variant={isActive("/spaces/available") ? "default" : "ghost"}
                   className="w-full justify-start"
                 >
-                  Parking Spots
+                  Available Parking
                 </Button>
               </Link>
               {user ? (

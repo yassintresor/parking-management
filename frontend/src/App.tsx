@@ -106,7 +106,11 @@ const App = () => {
               />
               <Route 
                 path="/spaces/available" 
-                element={<AvailableSpaces />}
+                element={
+                  <ProtectedRoute>
+                    <AvailableSpaces />
+                  </ProtectedRoute>
+                }
               />
               
               {/* Bookings routes */}

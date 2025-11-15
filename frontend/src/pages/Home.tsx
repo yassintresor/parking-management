@@ -28,17 +28,17 @@ const Home = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="relative bg-gradient-hero text-primary-foreground py-16 md:py-20 overflow-hidden">
+      <section className="relative h-[400px] bg-gradient-hero text-primary-foreground py-16 md:py-20 overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-20"
+          className="absolute inset-0 bg-cover bg-center "
           style={{ backgroundImage: `url(${heroImage})` }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-primary/80 to-primary/60" />
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">
+        <div className="container mx-auto px-4 mt-16 text-center relative z-10">
+          <h1 className="text-3xl sm:text-4xl text-white md:text-5xl font-bold mb-4 drop-shadow-lg">
             Find Your Perfect Parking Spot
           </h1>
-          <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 opacity-95 max-w-2xl mx-auto drop-shadow-md">
+          <p className="text-base sm:text-lg text-white md:text-xl mb-6 sm:mb-8 opacity-95 max-w-2xl mx-auto drop-shadow-md">
             Smart parking management system with real-time availability tracking
           </p>
         </div>

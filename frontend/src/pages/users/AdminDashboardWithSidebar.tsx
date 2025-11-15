@@ -33,7 +33,8 @@ import {
   SidebarTrigger,
   SidebarMenuSub,
   SidebarMenuSubItem,
-  SidebarMenuSubButton
+  SidebarMenuSubButton,
+  SidebarInset
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -108,11 +109,20 @@ const AdminDashboardWithSidebar = () => {
 
   // Form states
   const [showAddSpotForm, setShowAddSpotForm] = useState(false);
+  const [showAddUserForm, setShowAddUserForm] = useState(false);
   const [newSpot, setNewSpot] = useState({
     space_number: "",
     location: "",
     type: "COMPACT",
     hourly_rate: ""
+  });
+  
+  const [newUser, setNewUser] = useState({
+    email: "",
+    password: "",
+    name: "",
+    phone: "",
+    role: "USER"
   });
 
   // Fetch data on component mount
@@ -182,6 +192,47 @@ const AdminDashboardWithSidebar = () => {
     }
   };
 
+  const handleAddUser = async () => {
+    try {
+      console.log('Attempting to add user with data:', newUser);
+      
+      if (!newUser.email || !newUser.password || !newUser.name) {
+        toast.error("Please fill in all required fields");
+        return;
+      }
+
+      const token = localStorage.getItem('auth_token');
+      if (!token) throw new Error('No authentication token found');
+
+      // Ensure role is in uppercase
+      const userData = {
+        email: newUser.email,
+        password: newUser.password,
+        name: newUser.name,
+        phone: newUser.phone,
+        role: newUser.role?.toUpperCase() || 'USER'
+      };
+
+      console.log('Sending user data:', userData);
+
+      const response = await userApi.create(userData, token);
+
+      console.log('User creation response:', response);
+      
+      if (response.success) {
+        toast.success("User added successfully!");
+        setNewUser({ email: "", password: "", name: "", phone: "", role: "USER" });
+        setShowAddUserForm(false);
+        fetchData(); // Refresh data
+      } else {
+        toast.error(response.message || "Failed to add user");
+      }
+    } catch (err) {
+      console.error("Error adding user:", err);
+      toast.error("Failed to add user");
+    }
+  };
+
   const handleDeleteSpot = async (id: string) => {
     try {
       const token = localStorage.getItem('auth_token');
@@ -202,7 +253,7 @@ const AdminDashboardWithSidebar = () => {
   };
 
   const renderDashboard = () => (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Admin Dashboard</h1>
         <p className="text-muted-foreground">Welcome, {user?.name}</p>
@@ -264,7 +315,7 @@ const AdminDashboardWithSidebar = () => {
               {bookings.slice(0, 5).map(booking => (
                 <div key={booking.id} className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium">Booking #{booking.id.slice(0, 8)}</p>
+                    <p className="font-medium">Booking #{String(booking.id).slice(0, 8)}</p>
                     <p className="text-sm text-muted-foreground">
                       {new Date(booking.start_time).toLocaleDateString()}
                     </p>
@@ -311,7 +362,7 @@ const AdminDashboardWithSidebar = () => {
   );
 
   const renderParkingManagement = () => (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Parking Management</h1>
         <Button onClick={() => setShowAddSpotForm(!showAddSpotForm)}>
@@ -429,9 +480,81 @@ const AdminDashboardWithSidebar = () => {
   );
 
   const renderUserManagement = () => (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">User Management</h1>
-      
+    <div className="space-y-6 p-4">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">User Management</h1>
+        <Button onClick={() => setShowAddUserForm(!showAddUserForm)}>
+          <Plus className="h-4 w-4 mr-2" />
+          Add New User
+        </Button>
+      </div>
+
+      {showAddUserForm && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Add New User</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <Label htmlFor="email">Email *</Label>
+                <Input
+                  id="email"
+                  value={newUser.email}
+                  onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                  placeholder="e.g., user@example.com"
+                />
+              </div>
+              <div>
+                <Label htmlFor="password">Password *</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={newUser.password}
+                  onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                  placeholder="e.g., password123"
+                />
+              </div>
+              <div>
+                <Label htmlFor="name">Name *</Label>
+                <Input
+                  id="name"
+                  value={newUser.name}
+                  onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                  placeholder="e.g., John Doe"
+                />
+              </div>
+              <div>
+                <Label htmlFor="phone">Phone</Label>
+                <Input
+                  id="phone"
+                  value={newUser.phone}
+                  onChange={(e) => setNewUser({ ...newUser, phone: e.target.value })}
+                  placeholder="e.g., 123-456-7890"
+                />
+              </div>
+              <div>
+                <Label htmlFor="role">Role</Label>
+                <select
+                  id="role"
+                  className="w-full p-2 border rounded"
+                  value={newUser.role}
+                  onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
+                >
+                  <option value="USER">User</option>
+                  <option value="OPERATOR">Operator</option>
+                  <option value="ADMIN">Admin</option>
+                </select>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button onClick={handleAddUser}>Add User</Button>
+              <Button variant="outline" onClick={() => setShowAddUserForm(false)}>Cancel</Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle>All Users</CardTitle>
@@ -471,7 +594,7 @@ const AdminDashboardWithSidebar = () => {
   );
 
   const renderAnalytics = () => (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4">
       <h1 className="text-2xl font-bold">Analytics & Reports</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -612,7 +735,7 @@ const AdminDashboardWithSidebar = () => {
                 <SidebarMenuButton size="lg">
                   <div className="flex flex-col gap-1 leading-none">
                     <span className="font-semibold">Parking Admin</span>
-                    <span className="text-xs text-muted-foreground">Administrator</span>
+                    <span className="text-xs text-muted-foreground">{user?.email}</span>
                   </div>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -680,9 +803,15 @@ const AdminDashboardWithSidebar = () => {
           </SidebarFooter>
         </Sidebar>
         
-        <main className="flex-1 overflow-auto p-6">
-          {renderContent()}
-        </main>
+        <SidebarInset>
+          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+            <SidebarTrigger className="-ml-1" />
+            <div className="font-semibold">Admin Dashboard</div>
+          </header>
+          <main className="flex-1 overflow-auto">
+            {renderContent()}
+          </main>
+        </SidebarInset>
       </div>
     </SidebarProvider>
   );

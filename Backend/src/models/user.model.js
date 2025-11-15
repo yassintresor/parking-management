@@ -4,13 +4,22 @@ const bcrypt = require('bcrypt');
 class User {
   static async create({ email, password, name, phone, role = 'USER' }) {
     try {
+      console.log('Creating user in database with data:', { email, password: '****', name, phone, role });
       const hashedPassword = await bcrypt.hash(password, 10);
       const [result] = await db.query(
         'INSERT INTO users (email, password_hash, name, phone, role) VALUES (?, ?, ?, ?, ?)',
         [email, hashedPassword, name, phone, role]
       );
+      console.log('User inserted with result:', result);
       return result.insertId;
     } catch (error) {
+      console.error('Database error during user creation:', {
+        message: error.message,
+        code: error.code,
+        errno: error.errno,
+        sqlState: error.sqlState,
+        sqlMessage: error.sqlMessage
+      });
       throw error;
     }
   }

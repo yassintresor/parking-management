@@ -32,11 +32,17 @@ const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
     const response = await fetch(url, options);
     console.log(`API Response from: ${url}`, response.status, response.statusText);
     
-    // Handle 401 Unauthorized responses
-    if (response.status === 401) {
-      // Redirect to login or handle unauthorized access
-      window.location.href = "/auth/login";
-      throw new Error("Unauthorized access");
+    // Handle network errors
+    if (!response.ok) {
+      // Try to parse error response
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        console.log(`API Error Response JSON from: ${url}`, errorData);
+        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+      } else {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
     }
     
     // Handle non-JSON responses
@@ -44,19 +50,16 @@ const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
     if (contentType && contentType.includes("application/json")) {
       const data = await response.json();
       console.log(`API Response JSON from: ${url}`, data);
-      if (!response.ok) {
-        throw new Error(data.message || "An error occurred");
-      }
       return data;
     } else {
-      if (!response.ok) {
-        throw new Error("An error occurred");
-      }
       return response;
     }
   } catch (error) {
     console.error("API Error:", error);
-    toast.error(error instanceof Error ? error.message : "An unknown error occurred");
+    // Only show toast for network errors, not for application errors
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      toast.error("Network error: Unable to connect to server");
+    }
     throw error;
   }
 };
@@ -125,6 +128,17 @@ export const userApi = {
       headers: {
         "Authorization": `Bearer ${token}`,
       },
+    });
+  },
+
+  create: async (userData: any, token: string) => {
+    console.log('Sending user creation request with data:', userData);
+    return apiFetch("/api/users", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify(userData),
     });
   },
 
@@ -293,6 +307,15 @@ export const vehiclesApi = {
   delete: async (id: string, token: string) => {
     return apiFetch(`/api/vehicles/${id}`, {
       method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+  },
+  
+  // Add function to get user's vehicles
+  getUserVehicles: async (userId: string, token: string) => {
+    return apiFetch(`/api/vehicles/user/${userId}`, {
       headers: {
         "Authorization": `Bearer ${token}`,
       },

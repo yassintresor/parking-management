@@ -173,7 +173,7 @@ const EmployeeDashboard = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold">Employee Dashboard</h1>
-            <p className="text-muted-foreground">Welcome, {user?.name}</p>
+            <p className="text-muted-foreground">Welcome, {user?.name || user?.email}</p>
           </div>
           <div className="flex gap-2">
             <Button 
@@ -363,7 +363,7 @@ const EmployeeDashboard = () => {
               >
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-semibold">Booking #{booking.id.slice(0, 8)}</h4>
+                    <h4 className="font-semibold">Booking #{String(booking.id).slice(0, 8)}</h4>
                     <Badge variant={
                       booking.status === 'ACTIVE' ? 'default' :
                       booking.status === 'COMPLETED' ? 'secondary' :
