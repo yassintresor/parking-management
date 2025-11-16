@@ -28,6 +28,8 @@ import {
   LogOut,
   Plus
 } from 'lucide-react';
+import { vehiclesApi } from '@/services/api';
+import { toast } from 'sonner';
 
 export default function AddVehicle() {
   const [formData, setFormData] = useState({
@@ -60,28 +62,28 @@ export default function AddVehicle() {
     setLoading(true);
     
     try {
-      // In a real implementation, this would call your backend API
-      // const response = await fetch('/api/vehicles', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'Authorization': `Bearer ${token}`
-      //   },
-      //   body: JSON.stringify(formData)
-      // });
+      const token = localStorage.getItem('auth_token');
       
-      // if (response.ok) {
-      //   navigate('/vehicles');
-      // } else {
-      //   setError('Failed to add vehicle');
-      // }
+      if (!token) {
+        setError('Authentication required');
+        setLoading(false);
+        return;
+      }
+
+      // Submit vehicle to backend
+      const response = await vehiclesApi.create(formData, token);
       
-      // For now, just navigate to vehicles
-      console.log('Vehicle data:', formData);
-      navigate('/vehicles');
-    } catch (error) {
+      if (response.success) {
+        toast.success('Vehicle added successfully!');
+        navigate('/vehicles');
+      } else {
+        setError(response.message || 'Failed to add vehicle');
+        toast.error(response.message || 'Failed to add vehicle');
+      }
+    } catch (error: any) {
       console.error('Error adding vehicle:', error);
-      setError('Failed to add vehicle');
+      setError(error.message || 'Failed to add vehicle');
+      toast.error(error.message || 'Failed to add vehicle');
     } finally {
       setLoading(false);
     }

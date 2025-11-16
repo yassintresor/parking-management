@@ -21,6 +21,22 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Periodically check authentication status
+  useEffect(() => {
+    if (!user) return;
+
+    const interval = setInterval(() => {
+      // Re-check authentication status every 5 minutes
+      const token = localStorage.getItem('auth_token');
+      if (!token) {
+        // Token was removed, redirect to login
+        window.location.href = '/auth';
+      }
+    }, 5 * 60 * 1000); // 5 minutes
+
+    return () => clearInterval(interval);
+  }, [user]);
+
   // Debug logging
   console.log("ProtectedRoute render:", { 
     user: !!user, 

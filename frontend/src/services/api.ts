@@ -32,6 +32,14 @@ const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
     const response = await fetch(url, options);
     console.log(`API Response from: ${url}`, response.status, response.statusText);
     
+    // Handle 401 Unauthorized responses by clearing auth and redirecting
+    if (response.status === 401) {
+      // Clear auth token and redirect to login
+      localStorage.removeItem('auth_token');
+      window.location.href = '/auth';
+      throw new Error('Unauthorized: Please log in again');
+    }
+    
     // Handle network errors
     if (!response.ok) {
       // Try to parse error response
@@ -50,6 +58,12 @@ const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
     if (contentType && contentType.includes("application/json")) {
       const data = await response.json();
       console.log(`API Response JSON from: ${url}`, data);
+      
+      // If response contains a new token, update it in localStorage
+      if (data.data && data.data.token) {
+        localStorage.setItem('auth_token', data.data.token);
+      }
+      
       return data;
     } else {
       return response;

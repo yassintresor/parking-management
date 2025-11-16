@@ -12,16 +12,17 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 
+// Spaces components
+import SpacesList from "./pages/spaces/SpacesList";
+import AvailableSpaces from "./pages/spaces/AvailableSpaces";
+import PublicAvailableSpaces from "./pages/spaces/PublicAvailableSpaces";
+
 // User components
 import UserDashboard from "./pages/users/UserDashboard";
 import AdminDashboardWithSidebar from "./pages/users/AdminDashboardWithSidebar";
 import AdminLogin from "./pages/users/AdminLogin";
 import EmployeeDashboard from "./pages/users/EmployeeDashboard";
 import TestAdmin from "./pages/users/TestAdmin";
-
-// Spaces components
-import SpacesList from "./pages/spaces/SpacesList";
-import AvailableSpaces from "./pages/spaces/AvailableSpaces";
 
 // Bookings components
 import BookingsList from "./pages/bookings/BookingsList";
@@ -60,6 +61,9 @@ const App = () => {
               
               {/* Admin login route */}
               <Route path="/admin/login" element={<AdminLogin />} />
+              
+              {/* Public routes */}
+              <Route path="/spaces/available/public" element={<PublicAvailableSpaces />} />
               
               {/* Protected user routes */}
               <Route 

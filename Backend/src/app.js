@@ -20,12 +20,16 @@ app.use(express.urlencoded({ extended: true }));
 
 // Database
 const db = require('./config/database');
+const { initializeTables } = require('./utils/db-init');
 
-// Test database connection
+// Test database connection and initialize tables
 (async () => {
   try {
     await db.query('SELECT 1');
     console.log('Database connection successful');
+    
+    // Initialize database tables
+    await initializeTables();
   } catch (error) {
     console.error('Database connection failed:', error);
     process.exit(1);

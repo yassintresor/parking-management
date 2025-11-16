@@ -62,10 +62,14 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log('Login attempt with email:', email);
 
     // Check if user exists
     const user = await User.findByEmail(email);
+    console.log('User lookup result:', user);
+    
     if (!user) {
+      console.log('User not found for email:', email);
       return res.status(401).json({
         success: false,
         message: 'Invalid credentials'
@@ -73,7 +77,10 @@ const login = async (req, res) => {
     }
 
     // Validate password
+    console.log('Validating password for user:', user.email);
     const isValidPassword = await User.validatePassword(password, user.password_hash);
+    console.log('Password validation result:', isValidPassword);
+    
     if (!isValidPassword) {
       return res.status(401).json({
         success: false,
@@ -82,6 +89,49 @@ const login = async (req, res) => {
     }
 
     // Generate JWT token
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRE }
+    );
+
+    console.log('Login successful for user:', user.email);
+    res.json({
+      success: true,
+      data: {
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role
+        },
+        token
+      }
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error during login',
+      error: error.message
+    });
+  }
+};
+
+const verify = async (req, res) => {
+  try {
+    console.log('Verifying user with ID:', req.user.id);
+    const user = await User.findById(req.user.id);
+    console.log('User verification result:', user);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Extend token expiration on verification
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
@@ -97,40 +147,11 @@ const login = async (req, res) => {
           name: user.name,
           role: user.role
         },
-        token
+        token // Return refreshed token
       }
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Error during login',
-      error: error.message
-    });
-  }
-};
-
-const verify = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id);
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found'
-      });
-    }
-
-    res.json({
-      success: true,
-      data: {
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role
-        }
-      }
-    });
-  } catch (error) {
+    console.error('User verification error:', error);
     res.status(500).json({
       success: false,
       message: 'Error verifying user',

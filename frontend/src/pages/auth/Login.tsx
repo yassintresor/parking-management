@@ -51,6 +51,41 @@ const Login = () => {
     // The redirect is handled in the useAuth hook's signIn function
   };
 
+  // Prevent rendering the login form if user is already authenticated
+  if (user && userRole) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <Card className="w-full max-w-md bg-gradient-card border-border">
+          <CardHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <Shield className="h-10 w-10 sm:h-12 sm:w-12 text-primary" />
+            </div>
+            <CardTitle className="text-xl sm:text-2xl">Already Signed In</CardTitle>
+            <CardDescription className="text-sm sm:text-base">
+              You are already logged in. Redirecting to your dashboard...
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-center">
+            <Button 
+              onClick={() => {
+                if (userRole === "admin") {
+                  navigate("/admin");
+                } else if (userRole === "employee") {
+                  navigate("/employee");
+                } else {
+                  navigate("/dashboard");
+                }
+              }}
+              className="w-full"
+            >
+              Go to Dashboard
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="w-full max-w-md bg-gradient-card border-border">

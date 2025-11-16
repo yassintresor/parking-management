@@ -27,6 +27,8 @@ import {
   LogOut,
   Plus
 } from 'lucide-react';
+import { vehiclesApi } from '@/services/api';
+import { toast } from 'sonner';
 
 interface Vehicle {
   id: number;
@@ -51,25 +53,25 @@ export default function VehiclesList() {
 
   const fetchVehicles = async () => {
     try {
-      // In a real implementation, this would call your backend API
-      // const response = await fetch('/api/vehicles/user/' + user?.id);
-      // const data = await response.json();
-      // setVehicles(data);
+      setLoading(true);
+      const token = localStorage.getItem('auth_token');
       
-      // Mock data for now
-      setVehicles([
-        {
-          id: 1,
-          user_id: 1,
-          license_plate: 'ABC123',
-          make: 'Toyota',
-          model: 'Camry',
-          color: 'Blue',
-          created_at: '2025-11-05T11:05:17.000Z'
-        }
-      ]);
+      if (!token) {
+        toast.error('Authentication required');
+        return;
+      }
+
+      // Fetch user's vehicles from backend
+      const response = await vehiclesApi.getUserVehicles(user?.id || '', token);
+      
+      if (response.success) {
+        setVehicles(response.data);
+      } else {
+        toast.error(response.message || 'Failed to fetch vehicles');
+      }
     } catch (error) {
       console.error('Error fetching vehicles:', error);
+      toast.error('Failed to fetch vehicles');
     } finally {
       setLoading(false);
     }
@@ -81,9 +83,25 @@ export default function VehiclesList() {
     vehicle.model.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleDeleteVehicle = (vehicleId: number) => {
-    console.log('Deleting vehicle:', vehicleId);
-    // In a real implementation, this would call your backend API
+  const handleDeleteVehicle = async (vehicleId: number) => {
+    try {
+      const token = localStorage.getItem('auth_token');
+      
+      if (!token) {
+        toast.error('Authentication required');
+        return;
+      }
+
+      // In a real implementation, this would call your backend API to delete the vehicle
+      // For now, we'll just show a message
+      toast.info('Vehicle deletion would be implemented here');
+      
+      // Refresh the vehicles list
+      fetchVehicles();
+    } catch (error) {
+      console.error('Error deleting vehicle:', error);
+      toast.error('Failed to delete vehicle');
+    }
   };
 
   const formatDate = (dateString: string) => {

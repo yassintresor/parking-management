@@ -334,7 +334,7 @@ const EmployeeDashboard = () => {
                       Type: <span className="font-medium text-foreground">{spot.type}</span>
                     </span>
                     <span className="text-accent font-medium">
-                      ${spot.hourly_rate}/hr
+                      RWF {spot.hourly_rate}/hr
                     </span>
                   </div>
                 </div>

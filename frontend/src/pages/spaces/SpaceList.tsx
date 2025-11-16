@@ -18,18 +18,19 @@ const SpaceList = () => {
   const [spaces, setSpaces] = useState<ParkingSpace[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { session } = useAuth();
+  const { user, userRole } = useAuth();
 
   useEffect(() => {
     fetchSpaces();
   }, []);
 
   const fetchSpaces = async () => {
-    if (!session) return;
+    const token = localStorage.getItem('auth_token');
+    if (!token) return;
     
     try {
       setLoading(true);
-      const response = await spacesApi.getAll(session.access_token);
+      const response = await spacesApi.getAll(token);
       setSpaces(response.data || []);
     } catch (err) {
       setError('Failed to fetch parking spaces');
@@ -40,10 +41,11 @@ const SpaceList = () => {
   };
 
   const handleDeleteSpace = async (id: string) => {
-    if (!session) return;
+    const token = localStorage.getItem('auth_token');
+    if (!token) return;
     
     try {
-      await spacesApi.delete(id, session.access_token);
+      await spacesApi.delete(id, token);
       toast.success('Parking space deleted successfully');
       fetchSpaces(); // Refresh the list
     } catch (err) {
@@ -77,7 +79,7 @@ const SpaceList = () => {
                     <h3 className="font-semibold">{space.name}</h3>
                     <p className="text-sm text-gray-500">{space.location}</p>
                     <p className="text-sm">
-                      Rate: ${space.hourly_rate}/hour - 
+                      Rate: RWF {space.hourly_rate}/hour - 
                       {space.is_occupied ? ' Occupied' : ' Available'}
                     </p>
                   </div>

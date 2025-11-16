@@ -287,7 +287,7 @@ const AdminDashboardWithSidebar = () => {
             <DollarSign className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-500">${analytics?.total_revenue ?? 0}</div>
+            <div className="text-2xl font-bold text-blue-500">RWF {analytics?.total_revenue ?? 0}</div>
           </CardContent>
         </Card>
 
@@ -341,7 +341,7 @@ const AdminDashboardWithSidebar = () => {
               {payments.slice(0, 5).map(payment => (
                 <div key={payment.id} className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium">${payment.amount} {payment.currency}</p>
+                    <p className="font-medium">{payment.currency} {payment.amount}</p>
                     <p className="text-sm text-muted-foreground">
                       {new Date(payment.created_at).toLocaleDateString()}
                     </p>
@@ -411,7 +411,7 @@ const AdminDashboardWithSidebar = () => {
                 </select>
               </div>
               <div>
-                <Label htmlFor="hourly_rate">Hourly Rate ($) *</Label>
+                <Label htmlFor="hourly_rate">Hourly Rate (RWF) *</Label>
                 <Input
                   id="hourly_rate"
                   type="number"
@@ -455,7 +455,7 @@ const AdminDashboardWithSidebar = () => {
                       Type: <span className="font-medium text-foreground">{spot.type}</span>
                     </span>
                     <span className="text-accent font-medium">
-                      ${spot.hourly_rate}/hr
+                      RWF {spot.hourly_rate}/hr
                     </span>
                   </div>
                 </div>
@@ -624,7 +624,7 @@ const AdminDashboardWithSidebar = () => {
             <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${analytics?.total_revenue || 0}</div>
+            <div className="text-2xl font-bold">RWF {analytics?.total_revenue || 0}</div>
           </CardContent>
         </Card>
       </div>

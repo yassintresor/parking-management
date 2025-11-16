@@ -121,7 +121,7 @@ export default function SpacesList() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-500">Hourly Rate:</span>
-                    <span>${space.hourly_rate}</span>
+                    <span>RWF {space.hourly_rate}</span>
                   </div>
                   {userRole === 'admin' && (
                     <div className="pt-4 flex space-x-2">

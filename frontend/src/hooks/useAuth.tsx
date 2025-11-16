@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { authApi } from "@/services/api";
@@ -30,6 +30,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  // Token refresh interval reference
+  const tokenRefreshInterval = useRef<NodeJS.Timeout | null>(null);
+
   const fetchUserRole = async (token: string) => {
     try {
       const response = await authApi.verify(token);
@@ -46,6 +49,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (error) {
       console.error("Error in fetchUserRole:", error);
       return 'user'; // Default to user role on any error
+    }
+  };
+
+  // Function to refresh token periodically
+  const refreshToken = async () => {
+    try {
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        // Verify current token validity
+        const response = await authApi.verify(token);
+        if (!response.success) {
+          // Token invalid, sign out user
+          signOut();
+        }
+      } else {
+        // No token found, sign out user
+        signOut();
+      }
+    } catch (error) {
+      console.error('Token refresh error:', error);
+      // On error, sign out user
+      signOut();
     }
   };
 
@@ -82,6 +107,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     checkExistingAuth();
+
+    // Set up periodic token refresh (every 15 minutes)
+    tokenRefreshInterval.current = setInterval(refreshToken, 15 * 60 * 1000);
+
+    // Cleanup interval on unmount
+    return () => {
+      if (tokenRefreshInterval.current) {
+        clearInterval(tokenRefreshInterval.current);
+      }
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {
@@ -167,6 +202,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.removeItem('auth_token');
     setUser(null);
     setUserRole(null);
+    
+    // Clear token refresh interval
+    if (tokenRefreshInterval.current) {
+      clearInterval(tokenRefreshInterval.current);
+      tokenRefreshInterval.current = null;
+    }
+    
     toast.success("Signed out successfully!");
     navigate("/auth");
   };

@@ -221,7 +221,7 @@ const UserDashboard = () => {
                   <SelectContent>
                     {spaces.map((space) => (
                       <SelectItem key={space.id} value={space.id.toString()}>
-                        Space {space.space_number} - {space.location} (${space.hourly_rate}/hr)
+                        Space {space.space_number} - {space.location} (RWF {space.hourly_rate}/hr)
                       </SelectItem>
                     ))}
                   </SelectContent>

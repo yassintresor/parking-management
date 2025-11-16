@@ -6,6 +6,7 @@ class User {
     try {
       console.log('Creating user in database with data:', { email, password: '****', name, phone, role });
       const hashedPassword = await bcrypt.hash(password, 10);
+      console.log('Password hashed successfully');
       const [result] = await db.query(
         'INSERT INTO users (email, password_hash, name, phone, role) VALUES (?, ?, ?, ?, ?)',
         [email, hashedPassword, name, phone, role]
@@ -26,7 +27,7 @@ class User {
 
   static async findByEmail(email) {
     try {
-      const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+      const [rows] = await db.query('SELECT id, email, password_hash, name, phone, role, created_at FROM users WHERE email = ?', [email]);
       return rows[0];
     } catch (error) {
       throw error;
@@ -73,7 +74,10 @@ class User {
   }
 
   static async validatePassword(password, hashedPassword) {
-    return bcrypt.compare(password, hashedPassword);
+    console.log('Validating password against hash');
+    const result = await bcrypt.compare(password, hashedPassword);
+    console.log('Password validation result:', result);
+    return result;
   }
 }
 

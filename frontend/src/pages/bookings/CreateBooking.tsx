@@ -29,6 +29,8 @@ import {
   LogOut,
   Plus
 } from 'lucide-react';
+import { spacesApi, vehiclesApi, bookingsApi } from '@/services/api';
+import { toast } from 'sonner';
 
 interface Vehicle {
   id: number;
@@ -66,43 +68,25 @@ export default function CreateBooking() {
 
   const fetchVehiclesAndSpaces = async () => {
     try {
-      // In a real implementation, these would call your backend APIs
-      // const vehiclesResponse = await fetch('/api/vehicles/user/' + user?.id);
-      // const vehiclesData = await vehiclesResponse.json();
-      // setVehicles(vehiclesData);
+      setLoading(true);
+      const token = localStorage.getItem('auth_token');
       
-      // const spacesResponse = await fetch('/api/spaces/available');
-      // const spacesData = await spacesResponse.json();
-      // setSpaces(spacesData);
-      
-      // Mock data for now
-      setVehicles([
-        {
-          id: 1,
-          license_plate: 'ABC123',
-          make: 'Toyota',
-          model: 'Camry'
-        }
-      ]);
-      
-      setSpaces([
-        {
-          id: 1,
-          space_number: 'A1',
-          location: 'Entrance A',
-          type: 'COMPACT',
-          status: 'AVAILABLE',
-          hourly_rate: '2.50'
-        },
-        {
-          id: 2,
-          space_number: 'B1',
-          location: 'Entrance B',
-          type: 'LARGE',
-          status: 'AVAILABLE',
-          hourly_rate: '3.50'
-        }
-      ]);
+      if (!token) {
+        setError('Authentication required');
+        return;
+      }
+
+      // Fetch user's vehicles
+      const vehiclesResponse = await vehiclesApi.getUserVehicles(user?.id || '', token);
+      if (vehiclesResponse.success) {
+        setVehicles(vehiclesResponse.data);
+      }
+
+      // Fetch available parking spaces
+      const spacesResponse = await spacesApi.getAvailable();
+      if (spacesResponse.success) {
+        setSpaces(spacesResponse.data);
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
       setError('Failed to load data');
@@ -128,28 +112,26 @@ export default function CreateBooking() {
     }
     
     try {
-      // In a real implementation, this would call your backend API
-      // const response = await fetch('/api/bookings', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'Authorization': `Bearer ${token}`
-      //   },
-      //   body: JSON.stringify(formData)
-      // });
+      const token = localStorage.getItem('auth_token');
+      if (!token) {
+        setError('Authentication required');
+        return;
+      }
+
+      // Submit booking to backend
+      const response = await bookingsApi.create(formData, token);
       
-      // if (response.ok) {
-      //   navigate('/bookings');
-      // } else {
-      //   setError('Failed to create booking');
-      // }
-      
-      // For now, just navigate to bookings
-      console.log('Booking data:', formData);
-      navigate('/bookings');
-    } catch (error) {
+      if (response.success) {
+        toast.success('Booking created successfully!');
+        navigate('/bookings');
+      } else {
+        setError(response.message || 'Failed to create booking');
+        toast.error(response.message || 'Failed to create booking');
+      }
+    } catch (error: any) {
       console.error('Error creating booking:', error);
-      setError('Failed to create booking');
+      setError(error.message || 'Failed to create booking');
+      toast.error(error.message || 'Failed to create booking');
     }
   };
 
@@ -258,7 +240,7 @@ export default function CreateBooking() {
                     <form onSubmit={handleSubmit} className="space-y-6">
                       <div className="space-y-2">
                         <Label htmlFor="space_id">Parking Space</Label>
-                        <Select onValueChange={(value) => handleChange('space_id', value)}>
+                        <Select onValueChange={(value) => handleChange('space_id', value)} value={formData.space_id}>
                           <SelectTrigger>
                             <SelectValue placeholder="Select a parking space" />
                           </SelectTrigger>
@@ -274,7 +256,7 @@ export default function CreateBooking() {
                       
                       <div className="space-y-2">
                         <Label htmlFor="vehicle_id">Vehicle</Label>
-                        <Select onValueChange={(value) => handleChange('vehicle_id', value)}>
+                        <Select onValueChange={(value) => handleChange('vehicle_id', value)} value={formData.vehicle_id}>
                           <SelectTrigger>
                             <SelectValue placeholder="Select a vehicle" />
                           </SelectTrigger>

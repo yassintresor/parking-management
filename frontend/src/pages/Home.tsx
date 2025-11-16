@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import Navbar from "@/components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
-import { Shield, Clock, MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Shield, Clock, MapPin, Car } from "lucide-react";
 import heroImage from "@/assets/parking-hero.jpg";
 
 const Home = () => {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const services = [
     {
       icon: <Clock className="h-8 w-8 text-primary" />,
@@ -22,6 +27,56 @@ const Home = () => {
       description: "24/7 monitored and secured parking facilities"
     }
   ];
+
+  // If user is logged in, redirect them to their dashboard
+  useEffect(() => {
+    if (user) {
+      if (user.role === "ADMIN") {
+        navigate("/admin");
+      } else if (user.role === "OPERATOR") {
+        navigate("/employee");
+      } else {
+        navigate("/dashboard");
+      }
+    }
+  }, [user, navigate]);
+
+  // If user is logged in, show a message instead of the homepage content
+  if (user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardContent className="p-6 text-center">
+            <Shield className="h-12 w-12 text-primary mx-auto mb-4" />
+            <h2 className="text-xl font-bold mb-2">Already Logged In</h2>
+            <p className="text-muted-foreground mb-6">
+              You are currently logged in and cannot access the homepage. 
+              Please logout first if you want to view the homepage.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button onClick={() => {
+                if (user.role === "ADMIN") {
+                  navigate("/admin");
+                } else if (user.role === "OPERATOR") {
+                  navigate("/employee");
+                } else {
+                  navigate("/dashboard");
+                }
+              }}>
+                Go to Dashboard
+              </Button>
+              <Button variant="outline" onClick={async () => {
+                // Use the proper signOut function from the auth hook
+                await signOut();
+              }}>
+                Logout
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -41,6 +96,14 @@ const Home = () => {
           <p className="text-base sm:text-lg text-white md:text-xl mb-6 sm:mb-8 opacity-95 max-w-2xl mx-auto drop-shadow-md">
             Smart parking management system with real-time availability tracking
           </p>
+          <Button 
+            size="lg" 
+            className="bg-white text-primary hover:bg-white/90"
+            onClick={() => navigate("/spaces/available/public")}
+          >
+            <Car className="h-5 w-5 mr-2" />
+            View Available Spaces
+          </Button>
         </div>
       </section>
 
@@ -59,6 +122,32 @@ const Home = () => {
                 <p className="text-muted-foreground text-sm sm:text-base">{service.description}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Available Spaces Preview */}
+      <section className="py-12 sm:py-16">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-4">Available Parking Spaces</h2>
+            <p className="text-muted-foreground max-w-3xl mx-auto text-sm sm:text-base">
+              Check our real-time availability of parking spaces. Sign in to book your spot!
+            </p>
+          </div>
+          
+          <div className="bg-card p-6 rounded-lg border text-center">
+            <Car className="h-12 w-12 text-primary mx-auto mb-4" />
+            <h3 className="text-xl font-semibold mb-2">View Current Availability</h3>
+            <p className="text-muted-foreground mb-6">
+              See which parking spaces are available right now in our facilities
+            </p>
+            <Button 
+              size="lg" 
+              onClick={() => navigate("/spaces/available/public")}
+            >
+              View Available Spaces
+            </Button>
           </div>
         </div>
       </section>

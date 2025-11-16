@@ -27,6 +27,8 @@ import {
   LogOut,
   Plus
 } from 'lucide-react';
+import { bookingsApi } from '@/services/api';
+import { toast } from 'sonner';
 
 interface Booking {
   id: number;
@@ -54,28 +56,25 @@ export default function BookingsList() {
 
   const fetchBookings = async () => {
     try {
-      // In a real implementation, this would call your backend API
-      // const response = await fetch('/api/bookings');
-      // const data = await response.json();
-      // setBookings(data);
+      setLoading(true);
+      const token = localStorage.getItem('auth_token');
       
-      // Mock data for now
-      setBookings([
-        {
-          id: 1,
-          user_id: 1,
-          space_id: 1,
-          vehicle_id: 1,
-          start_time: '2025-11-05T10:00:00.000Z',
-          end_time: '2025-11-05T12:00:00.000Z',
-          status: 'ACTIVE',
-          created_at: '2025-11-05T11:05:38.000Z',
-          space_number: 'A1',
-          license_plate: 'ABC123'
-        }
-      ]);
+      if (!token) {
+        toast.error('Authentication required');
+        return;
+      }
+
+      // Fetch user's bookings from backend
+      const response = await bookingsApi.getAll(token);
+      
+      if (response.success) {
+        setBookings(response.data);
+      } else {
+        toast.error(response.message || 'Failed to fetch bookings');
+      }
     } catch (error) {
       console.error('Error fetching bookings:', error);
+      toast.error('Failed to fetch bookings');
     } finally {
       setLoading(false);
     }
@@ -87,9 +86,25 @@ export default function BookingsList() {
     booking.status.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleCancelBooking = (bookingId: number) => {
-    console.log('Canceling booking:', bookingId);
-    // In a real implementation, this would call your backend API
+  const handleCancelBooking = async (bookingId: number) => {
+    try {
+      const token = localStorage.getItem('auth_token');
+      
+      if (!token) {
+        toast.error('Authentication required');
+        return;
+      }
+
+      // In a real implementation, this would call your backend API to cancel the booking
+      // For now, we'll just show a message
+      toast.info('Booking cancellation would be implemented here');
+      
+      // Refresh the bookings list
+      fetchBookings();
+    } catch (error) {
+      console.error('Error canceling booking:', error);
+      toast.error('Failed to cancel booking');
+    }
   };
 
   const formatDateTime = (dateString: string) => {
