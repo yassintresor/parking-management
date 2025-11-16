@@ -65,7 +65,7 @@ export default function BookingsList() {
       }
 
       // Fetch user's bookings from backend
-      const response = await bookingsApi.getAll(token);
+      const response = await bookingsApi.getUserBookings(user?.id.toString() || '', token);
       
       if (response.success) {
         setBookings(response.data);
@@ -95,12 +95,15 @@ export default function BookingsList() {
         return;
       }
 
-      // In a real implementation, this would call your backend API to cancel the booking
-      // For now, we'll just show a message
-      toast.info('Booking cancellation would be implemented here');
+      const response = await bookingsApi.cancel(bookingId.toString(), token);
       
-      // Refresh the bookings list
-      fetchBookings();
+      if (response.success) {
+        toast.success('Booking cancelled successfully');
+        // Refresh the bookings list
+        fetchBookings();
+      } else {
+        toast.error(response.message || 'Failed to cancel booking');
+      }
     } catch (error) {
       console.error('Error canceling booking:', error);
       toast.error('Failed to cancel booking');

@@ -131,20 +131,7 @@ export default function PublicAvailableSpaces() {
           </div>
         )}
 
-        <div className="mt-12 text-center">
-          <h2 className="text-2xl font-bold mb-4">Ready to Book a Spot?</h2>
-          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            Create an account or sign in to reserve your parking space and enjoy our convenient parking services.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button onClick={() => navigate("/auth")}>
-              Sign In
-            </Button>
-            <Button variant="outline" onClick={() => navigate("/auth/register")}>
-              Create Account
-            </Button>
-          </div>
-        </div>
+        
       </main>
     </div>
   );

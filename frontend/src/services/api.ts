@@ -5,12 +5,12 @@ import { toast } from "sonner";
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
 // Generic fetch function with error handling
-const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
+const apiFetch = async (endpoint: string, options: RequestInit = {}, token?: string) => {
   const url = `${API_BASE_URL}${endpoint}`;
   console.log(`API Request to: ${url}`, options);
   
-  // Get auth token from localStorage if available
-  const token = localStorage.getItem('auth_token');
+  // Get auth token from localStorage if available and not provided
+  const authToken = token || localStorage.getItem('auth_token');
   
   // Set default headers
   const defaultHeaders = {
@@ -18,8 +18,8 @@ const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
   };
 
   // Add authorization header if token exists
-  if (token) {
-    defaultHeaders["Authorization"] = `Bearer ${token}`;
+  if (authToken) {
+    defaultHeaders["Authorization"] = `Bearer ${authToken}`;
   }
 
   // Merge default headers with any provided headers
@@ -114,11 +114,7 @@ export const authApi = {
         throw new Error('No authentication token available');
       }
       
-      const response = await apiFetch("/api/auth/verify", {
-        headers: {
-          "Authorization": `Bearer ${authToken}`,
-        },
-      });
+      const response = await apiFetch("/api/auth/verify", {}, authToken);
       return response;
     } catch (error) {
       console.error('Verify API error:', error);
@@ -130,97 +126,63 @@ export const authApi = {
 // User API functions
 export const userApi = {
   getAll: async (token: string) => {
-    return apiFetch("/api/users", {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+    return apiFetch("/api/users", {}, token);
   },
 
   getById: async (id: string, token: string) => {
-    return apiFetch(`/api/users/${id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+    return apiFetch(`/api/users/${id}`, {}, token);
   },
 
   create: async (userData: any, token: string) => {
     console.log('Sending user creation request with data:', userData);
     return apiFetch("/api/users", {
       method: "POST",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
       body: JSON.stringify(userData),
-    });
+    }, token);
   },
 
   update: async (id: string, userData: any, token: string) => {
     return apiFetch(`/api/users/${id}`, {
       method: "PUT",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
       body: JSON.stringify(userData),
-    });
+    }, token);
   },
 
   delete: async (id: string, token: string) => {
     return apiFetch(`/api/users/${id}`, {
       method: "DELETE",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+    }, token);
   },
 };
 
 // Parking Spaces API functions
 export const spacesApi = {
   getAll: async (token: string) => {
-    return apiFetch("/api/spaces", {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+    return apiFetch("/api/spaces", {}, token);
   },
 
   getById: async (id: string, token: string) => {
-    return apiFetch(`/api/spaces/${id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+    return apiFetch(`/api/spaces/${id}`, {}, token);
   },
 
   create: async (spaceData: any, token: string) => {
     return apiFetch("/api/spaces", {
       method: "POST",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
       body: JSON.stringify(spaceData),
-    });
+    }, token);
   },
 
   update: async (id: string, spaceData: any, token: string) => {
     return apiFetch(`/api/spaces/${id}`, {
       method: "PUT",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
       body: JSON.stringify(spaceData),
-    });
+    }, token);
   },
 
   delete: async (id: string, token: string) => {
     return apiFetch(`/api/spaces/${id}`, {
       method: "DELETE",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+    }, token);
   },
 
   getAvailable: async () => {
@@ -235,144 +197,102 @@ export const spacesApi = {
 // Bookings API functions
 export const bookingsApi = {
   getAll: async (token: string) => {
-    return apiFetch("/api/bookings", {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+    return apiFetch("/api/bookings", {}, token);
   },
 
   getById: async (id: string, token: string) => {
-    return apiFetch(`/api/bookings/${id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+    return apiFetch(`/api/bookings/${id}`, {}, token);
   },
 
   create: async (bookingData: any, token: string) => {
     return apiFetch("/api/bookings", {
       method: "POST",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
       body: JSON.stringify(bookingData),
-    });
+    }, token);
   },
 
   update: async (id: string, bookingData: any, token: string) => {
     return apiFetch(`/api/bookings/${id}`, {
       method: "PUT",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
       body: JSON.stringify(bookingData),
-    });
+    }, token);
   },
 
   delete: async (id: string, token: string) => {
     return apiFetch(`/api/bookings/${id}`, {
       method: "DELETE",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+    }, token);
+  },
+
+  getUserBookings: async (userId: string, token: string) => {
+    return apiFetch(`/api/bookings/user/${userId}`, {}, token);
+  },
+
+  cancel: async (id: string, token: string) => {
+    return apiFetch(`/api/bookings/${id}/cancel`, {
+      method: "POST",
+    }, token);
   },
 };
 
 // Vehicles API functions
 export const vehiclesApi = {
   getAll: async (token: string) => {
-    return apiFetch("/api/vehicles", {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+    return apiFetch("/api/vehicles", {}, token);
   },
 
   getById: async (id: string, token: string) => {
-    return apiFetch(`/api/vehicles/${id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+    return apiFetch(`/api/vehicles/${id}`, {}, token);
   },
 
   create: async (vehicleData: any, token: string) => {
     return apiFetch("/api/vehicles", {
       method: "POST",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
       body: JSON.stringify(vehicleData),
-    });
+    }, token);
   },
 
   update: async (id: string, vehicleData: any, token: string) => {
     return apiFetch(`/api/vehicles/${id}`, {
       method: "PUT",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
       body: JSON.stringify(vehicleData),
-    });
+    }, token);
   },
 
   delete: async (id: string, token: string) => {
     return apiFetch(`/api/vehicles/${id}`, {
       method: "DELETE",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+    }, token);
   },
   
   // Add function to get user's vehicles
   getUserVehicles: async (userId: string, token: string) => {
-    return apiFetch(`/api/vehicles/user/${userId}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+    return apiFetch(`/api/vehicles/user/${userId}`, {}, token);
   },
 };
 
 // Payments API functions
 export const paymentsApi = {
   getAll: async (token: string) => {
-    return apiFetch("/api/payments", {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+    return apiFetch("/api/payments", {}, token);
   },
 
   getById: async (id: string, token: string) => {
-    return apiFetch(`/api/payments/${id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+    return apiFetch(`/api/payments/${id}`, {}, token);
   },
 
   create: async (paymentData: any, token: string) => {
     return apiFetch("/api/payments", {
       method: "POST",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
       body: JSON.stringify(paymentData),
-    });
+    }, token);
   },
 
   update: async (id: string, paymentData: any, token: string) => {
     return apiFetch(`/api/payments/${id}`, {
       method: "PUT",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
       body: JSON.stringify(paymentData),
-    });
+    }, token);
   },
 };
 
@@ -382,31 +302,11 @@ export const analyticsApi = {
     try {
       // Fetch all required data in parallel
       const [occupancyRes, spacesRes, usersRes, bookingsRes, paymentsRes] = await Promise.all([
-        apiFetch("/api/analytics/occupancy", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
-        }),
-        apiFetch("/api/spaces", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
-        }),
-        apiFetch("/api/users", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
-        }),
-        apiFetch("/api/bookings", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
-        }),
-        apiFetch("/api/payments", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
-        })
+        apiFetch("/api/analytics/occupancy", {}, token),
+        apiFetch("/api/spaces", {}, token),
+        apiFetch("/api/users", {}, token),
+        apiFetch("/api/bookings", {}, token),
+        apiFetch("/api/payments", {}, token)
       ]);
 
       // Combine data for dashboard
@@ -471,43 +371,23 @@ export const analyticsApi = {
   },
 
   getRevenueData: async (token: string) => {
-    return apiFetch("/api/analytics/revenue", {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+    return apiFetch("/api/analytics/revenue", {}, token);
   },
 
   getOccupancyData: async (token: string) => {
-    return apiFetch("/api/analytics/occupancy", {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+    return apiFetch("/api/analytics/occupancy", {}, token);
   },
 
   getUsageData: async (token: string) => {
-    return apiFetch("/api/analytics/usage", {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+    return apiFetch("/api/analytics/usage", {}, token);
   },
 
   getDailyData: async (token: string) => {
-    return apiFetch("/api/analytics/daily", {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+    return apiFetch("/api/analytics/daily", {}, token);
   },
 
   getMonthlyData: async (token: string) => {
-    return apiFetch("/api/analytics/monthly", {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+    return apiFetch("/api/analytics/monthly", {}, token);
   },
 };
 
