@@ -88,90 +88,161 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
       <Navbar />
       
-      <div className="container mx-auto px-4 py-6 sm:py-8">
-        <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold mb-2">Admin Dashboard</h1>
-          <p className="text-muted-foreground text-sm sm:text-base">Manage parking spots and view analytics</p>
+      <div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl">
+        <div className="mb-10">
+          <h1 className="text-4xl md:text-5xl font-bold text-neutral-900 mb-3">🏢 Admin Dashboard</h1>
+          <p className="text-neutral-600 text-lg">Manage parking facilities and view comprehensive analytics</p>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          <Card className="bg-gradient-card border-border">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Total Spots</CardTitle>
-              <Car className="h-4 w-4 text-primary" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{totalSpots}</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                Across all locations
-              </p>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+          <div className="modern-card border-l-4 border-l-blue-600 hover:border-l-blue-700 hover:shadow-lg transition-all">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-neutral-600 text-sm font-semibold uppercase tracking-wide">Total Spots</h3>
+              <div className="p-2 bg-gradient-to-br from-blue-100 to-blue-50 rounded-lg">
+                <Car className="h-6 w-6 text-blue-600" />
+              </div>
+            </div>
+            <div className="text-4xl font-bold text-neutral-900 mb-2">{totalSpots}</div>
+            <p className="text-xs text-neutral-600">Across all locations</p>
+          </div>
 
-          <Card className="bg-gradient-card border-border">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Available</CardTitle>
-              <MapPin className="h-4 w-4 text-success" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-success">{totalAvailable}</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                Currently free
-              </p>
-            </CardContent>
-          </Card>
+          <div className="modern-card border-l-4 border-l-green-600 hover:border-l-green-700 hover:shadow-lg transition-all">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-neutral-600 text-sm font-semibold uppercase tracking-wide">Available</h3>
+              <div className="p-2 bg-gradient-to-br from-green-100 to-green-50 rounded-lg">
+                <MapPin className="h-6 w-6 text-green-600" />
+              </div>
+            </div>
+            <div className="text-4xl font-bold text-green-600 mb-2">{totalAvailable}</div>
+            <p className="text-xs text-neutral-600">Currently free</p>
+          </div>
 
-          <Card className="bg-gradient-card border-border">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Occupancy Rate</CardTitle>
-              <TrendingUp className="h-4 w-4 text-accent" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{occupancyRate}%</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                Current utilization
-              </p>
-            </CardContent>
-          </Card>
+          <div className="modern-card border-l-4 border-l-purple-600 hover:border-l-purple-700 hover:shadow-lg transition-all">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-neutral-600 text-sm font-semibold uppercase tracking-wide">Occupancy</h3>
+              <div className="p-2 bg-gradient-to-br from-purple-100 to-purple-50 rounded-lg">
+                <TrendingUp className="h-6 w-6 text-purple-600" />
+              </div>
+            </div>
+            <div className="text-4xl font-bold text-purple-600 mb-2">{occupancyRate}%</div>
+            <p className="text-xs text-neutral-600">Current utilization</p>
+          </div>
 
-          <Card className="bg-gradient-card border-border">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Revenue (Today)</CardTitle>
-              <DollarSign className="h-4 w-4 text-accent" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-accent">${totalRevenue}</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                Estimated hourly
-              </p>
-            </CardContent>
-          </Card>
+          <div className="modern-card border-l-4 border-l-amber-600 hover:border-l-amber-700 hover:shadow-lg transition-all">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-neutral-600 text-sm font-semibold uppercase tracking-wide">Revenue</h3>
+              <div className="p-2 bg-gradient-to-br from-amber-100 to-amber-50 rounded-lg">
+                <DollarSign className="h-6 w-6 text-amber-600" />
+              </div>
+            </div>
+            <div className="text-4xl font-bold text-amber-600 mb-2">${totalRevenue}</div>
+            <p className="text-xs text-neutral-600">Estimated hourly</p>
+          </div>
         </div>
 
         {/* Parking Spots Management */}
-        <Card className="bg-gradient-card border-border">
-          <CardHeader>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <CardTitle>Parking Spots Management</CardTitle>
+        <div className="modern-card border border-gray-200">
+          <div className="border-b border-gray-200 pb-6 mb-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-bold text-neutral-900">🅿️ Parking Spots Management</h2>
+                <p className="text-neutral-600 text-sm mt-1">Manage and monitor all parking facilities</p>
+              </div>
               <Button 
                 onClick={() => setShowAddForm(!showAddForm)}
-                variant="accent"
-                size="sm"
-                className="w-full sm:w-auto"
+                className="bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:shadow-lg font-semibold"
               >
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="h-5 w-5 mr-2" />
                 Add New Spot
               </Button>
             </div>
-          </CardHeader>
-          <CardContent>
-            {showAddForm && (
-              <div className="mb-6 p-4 border rounded-lg bg-card">
-                <h3 className="font-semibold mb-4">Add New Parking Spot</h3>
+          </div>
+
+          {/* Add Form */}
+          {showAddForm && (
+            <div className="mb-8 p-6 border-2 border-dashed border-blue-300 rounded-lg bg-blue-50">
+              <h3 className="font-bold text-lg text-neutral-900 mb-5">➕ Add New Parking Spot</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="text-sm font-semibold text-neutral-700">Parking Name</Label>
+                  <Input
+                    id="name"
+                    value={newSpot.name}
+                    onChange={(e) => setNewSpot({ ...newSpot, name: e.target.value })}
+                    placeholder="e.g., Downtown Plaza"
+                    className="input-modern"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="address" className="text-sm font-semibold text-neutral-700">Address</Label>
+                  <Input
+                    id="address"
+                    value={newSpot.address}
+                    onChange={(e) => setNewSpot({ ...newSpot, address: e.target.value })}
+                    placeholder="e.g., 123 Main Street"
+                    className="input-modern"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="totalSpots" className="text-sm font-semibold text-neutral-700">Total Spots</Label>
+                  <Input
+                    id="totalSpots"
+                    type="number"
+                    value={newSpot.totalSpots}
+                    onChange={(e) => setNewSpot({ ...newSpot, totalSpots: e.target.value })}
+                    placeholder="e.g., 50"
+                    className="input-modern"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="pricePerHour" className="text-sm font-semibold text-neutral-700">Price per Hour ($)</Label>
+                  <Input
+                    id="pricePerHour"
+                    type="number"
+                    step="0.5"
+                    value={newSpot.pricePerHour}
+                    onChange={(e) => setNewSpot({ ...newSpot, pricePerHour: e.target.value })}
+                    placeholder="e.g., 5"
+                    className="input-modern"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button 
+                  onClick={handleAddSpot} 
+                  className="bg-gradient-to-r from-green-600 to-green-700 text-white hover:shadow-lg font-semibold"
+                >
+                  ✓ Add Spot
+                </Button>
+                <Button 
+                  onClick={() => setShowAddForm(false)} 
+                  className="bg-gray-200 text-neutral-700 hover:bg-gray-300 font-semibold"
+                >
+                  ✕ Cancel
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Spots List */}
+          <div className="space-y-4">
+            {parkingSpots.map((spot) => (
+              <div
+                key={spot.id}
+                className="modern-card border-l-4 border-l-blue-600 hover:border-l-blue-700 hover:shadow-lg transition-all"
+              >
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h4 className="text-lg font-bold text-neutral-900">{spot.name}</h4>
+                      <Badge className={spot.availableSpots > 0 ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white" : "bg-gradient-to-r from-red-500 to-rose-600 text-white"}>
+                        {spot.availableSpots > 0 ? "✓ Available" : "✕ Full"}
+                      </Badge>
+                    </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <div>
                     <Label htmlFor="name">Parking Name</Label>

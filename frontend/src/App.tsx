@@ -7,6 +7,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
+import "./styles/modern-theme.css";
 
 // Auth components
 import Login from "./pages/auth/Login";
@@ -22,6 +23,7 @@ import UserDashboard from "./pages/users/UserDashboard";
 import AdminDashboardWithSidebar from "./pages/users/AdminDashboardWithSidebar";
 import AdminLogin from "./pages/users/AdminLogin";
 import EmployeeDashboard from "./pages/users/EmployeeDashboard";
+import EmployeeDashboardWithSidebar from "./pages/users/EmployeeDashboardWithSidebar";
 import TestAdmin from "./pages/users/TestAdmin";
 
 // Bookings components
@@ -78,7 +80,7 @@ const App = () => {
                 path="/employee" 
                 element={
                   <ProtectedRoute requiredRole="employee">
-                    <EmployeeDashboard />
+                    <EmployeeDashboardWithSidebar />
                   </ProtectedRoute>
                 } 
               />

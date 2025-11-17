@@ -54,18 +54,20 @@ const Login = () => {
   // Prevent rendering the login form if user is already authenticated
   if (user && userRole) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <Card className="w-full max-w-md bg-gradient-card border-border">
-          <CardHeader className="text-center">
-            <div className="flex justify-center mb-4">
-              <Shield className="h-10 w-10 sm:h-12 sm:w-12 text-primary" />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
+        <div className="modern-card w-full max-w-md border-blue-200">
+          <div className="text-center space-y-4">
+            <div className="flex justify-center">
+              <div className="p-4 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full">
+                <Shield className="h-10 w-10 sm:h-12 sm:w-12 text-blue-600" />
+              </div>
             </div>
-            <CardTitle className="text-xl sm:text-2xl">Already Signed In</CardTitle>
-            <CardDescription className="text-sm sm:text-base">
-              You are already logged in. Redirecting to your dashboard...
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="text-center">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900">Already Signed In</h2>
+              <p className="text-sm sm:text-base text-neutral-600 mt-1">
+                You are already logged in. Redirecting to your dashboard...
+              </p>
+            </div>
             <Button 
               onClick={() => {
                 if (userRole === "admin") {
@@ -76,67 +78,78 @@ const Login = () => {
                   navigate("/dashboard");
                 }
               }}
-              className="w-full"
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg"
             >
               Go to Dashboard
             </Button>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-md bg-gradient-card border-border">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            <Shield className="h-10 w-10 sm:h-12 sm:w-12 text-primary" />
-          </div>
-          <CardTitle className="text-xl sm:text-2xl">Welcome Back</CardTitle>
-          <CardDescription className="text-sm sm:text-base">Sign in to access your parking management dashboard</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {error && <div className="mb-4 text-center text-sm font-medium text-destructive">{error}</div>}
-          <form onSubmit={handleSignIn} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="signin-email" className="text-sm">Email</Label>
-              <Input
-                id="signin-email"
-                type="email"
-                placeholder="name@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={isLoading}
-                className="text-sm sm:text-base"
-              />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 flex items-center justify-center p-4">
+      <div className="modern-card w-full max-w-md border-blue-200">
+        <div className="text-center mb-6 space-y-3">
+          <div className="flex justify-center">
+            <div className="p-4 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full">
+              <Shield className="h-10 w-10 sm:h-12 sm:w-12 text-blue-600" />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="signin-password" className="text-sm">Password</Label>
-              <Input
-                id="signin-password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={isLoading}
-                className="text-sm sm:text-base"
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign In"}
-            </Button>
-          </form>
-          <div className="mt-4 text-center text-sm">
-            Don't have an account?{" "}
-            <Link to="/auth/register" className="text-primary hover:underline">
-              Sign up
-            </Link>
           </div>
-        </CardContent>
-      </Card>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-neutral-900">Welcome Back</h1>
+            <p className="text-sm sm:text-base text-neutral-600 mt-1">Sign in to access your parking management dashboard</p>
+          </div>
+        </div>
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm font-medium rounded-lg flex items-start">
+            <span className="mr-2">⚠️</span>
+            <span>{error}</span>
+          </div>
+        )}
+        <form onSubmit={handleSignIn} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="signin-email" className="text-sm font-semibold text-neutral-700">Email Address</Label>
+            <Input
+              id="signin-email"
+              type="email"
+              placeholder="name@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={isLoading}
+              className="input-modern text-sm sm:text-base"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="signin-password" className="text-sm font-semibold text-neutral-700">Password</Label>
+            <Input
+              id="signin-password"
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={isLoading}
+              className="input-modern text-sm sm:text-base"
+            />
+          </div>
+          <Button 
+            type="submit" 
+            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg font-semibold py-3 transition-all duration-200" 
+            disabled={isLoading}
+          >
+            {isLoading ? "Signing in..." : "Sign In"}
+          </Button>
+        </form>
+        <div className="mt-4 text-center text-sm">
+          <span className="text-neutral-600">Don't have an account?{" "}</span>
+          <Link to="/auth/register" className="text-blue-600 hover:text-blue-700 font-semibold transition-colors">
+            Sign up
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };

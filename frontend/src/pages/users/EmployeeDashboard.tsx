@@ -168,40 +168,83 @@ const EmployeeDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4">
-      <div className="mb-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 p-4 md:p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header Section */}
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold">Employee Dashboard</h1>
-            <p className="text-muted-foreground">Welcome, {user?.name || user?.email}</p>
+            <h1 className="text-3xl md:text-4xl font-bold text-neutral-900">Employee Dashboard</h1>
+            <p className="text-neutral-600 mt-2">Welcome, {user?.name || user?.email} 👋</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Button 
               onClick={handleRefresh} 
-              variant="outline" 
               disabled={refreshing}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md"
             >
               <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
               Refresh
             </Button>
-            <Button onClick={() => signOut()}>
+            <Button 
+              onClick={() => signOut()}
+              className="bg-red-600 hover:bg-red-700 text-white font-semibold shadow-md"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
               Sign Out
             </Button>
           </div>
         </div>
-      </div>
 
-      {/* Stats Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Spots</CardTitle>
-            <Car className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{parkingSpots.length}</div>
-          </CardContent>
-        </Card>
+        {/* Stats Summary */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="modern-card border-l-4 border-l-blue-600">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-neutral-600 text-sm font-medium">Total Spots</p>
+                <p className="text-3xl font-bold text-blue-600 mt-2">{parkingSpots.length}</p>
+              </div>
+              <div className="p-3 bg-gradient-to-br from-blue-100 to-blue-50 rounded-xl">
+                <Car className="h-6 w-6 text-blue-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="modern-card border-l-4 border-l-green-600">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-neutral-600 text-sm font-medium">Available</p>
+                <p className="text-3xl font-bold text-green-600 mt-2">{parkingSpots.filter(s => s.status === 'AVAILABLE').length}</p>
+              </div>
+              <div className="p-3 bg-gradient-to-br from-green-100 to-green-50 rounded-xl">
+                <CheckCircle className="h-6 w-6 text-green-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="modern-card border-l-4 border-l-red-600">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-neutral-600 text-sm font-medium">Occupied</p>
+                <p className="text-3xl font-bold text-red-600 mt-2">{parkingSpots.filter(s => s.status === 'OCCUPIED').length}</p>
+              </div>
+              <div className="p-3 bg-gradient-to-br from-red-100 to-red-50 rounded-xl">
+                <XCircle className="h-6 w-6 text-red-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="modern-card border-l-4 border-l-purple-600">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-neutral-600 text-sm font-medium">Active Bookings</p>
+                <p className="text-3xl font-bold text-purple-600 mt-2">{bookings.filter(b => b.status === 'CONFIRMED').length}</p>
+              </div>
+              <div className="p-3 bg-gradient-to-br from-purple-100 to-purple-50 rounded-xl">
+                <MapPin className="h-6 w-6 text-purple-600" />
+              </div>
+            </div>
+          </div>
+        </div>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

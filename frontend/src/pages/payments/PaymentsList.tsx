@@ -100,30 +100,31 @@ export default function PaymentsList() {
   return (
     <SidebarProvider>
       <div className="flex h-screen">
-        <Sidebar>
-          <SidebarHeader>
+        <Sidebar className="bg-gradient-to-b from-blue-900 to-purple-900 text-white shadow-2xl">
+          <SidebarHeader className="border-b border-blue-700/50 bg-gradient-to-r from-blue-800/80 to-purple-800/80 backdrop-blur-sm p-4">
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton size="lg">
+                <SidebarMenuButton size="lg" className="text-white hover:bg-white/10 rounded-xl transition-all duration-300 p-4">
                   <div className="flex flex-col gap-1 leading-none">
-                    <span className="font-semibold">Parking User</span>
-                    <span className="text-xs text-muted-foreground">{user?.email}</span>
+                    <span className="font-bold text-white text-lg">Parking User</span>
+                    <span className="text-xs text-blue-200">{user?.email}</span>
                   </div>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarHeader>
           
-          <SidebarContent>
+          <SidebarContent className="py-6">
             <SidebarGroup>
-              <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+              <SidebarGroupLabel className="text-blue-300 font-bold text-sm mb-3 px-4">Navigation</SidebarGroupLabel>
               <SidebarGroupContent>
-                <SidebarMenu>
+                <SidebarMenu className="space-y-2 px-2">
                   <SidebarMenuItem>
                     <SidebarMenuButton 
                       onClick={() => navigate("/dashboard")}
+                      className="text-blue-100 hover:bg-white/10 rounded-xl transition-all duration-300 p-4"
                     >
-                      <Home className="h-4 w-4" />
+                      <Home className="h-5 w-5" />
                       <span>Dashboard</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -131,8 +132,9 @@ export default function PaymentsList() {
                   <SidebarMenuItem>
                     <SidebarMenuButton 
                       onClick={() => navigate("/bookings")}
+                      className="text-blue-100 hover:bg-white/10 rounded-xl transition-all duration-300 p-4"
                     >
-                      <Calendar className="h-4 w-4" />
+                      <Calendar className="h-5 w-5" />
                       <span>My Bookings</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -140,8 +142,9 @@ export default function PaymentsList() {
                   <SidebarMenuItem>
                     <SidebarMenuButton 
                       onClick={() => navigate("/vehicles")}
+                      className="text-blue-100 hover:bg-white/10 rounded-xl transition-all duration-300 p-4"
                     >
-                      <Car className="h-4 w-4" />
+                      <Car className="h-5 w-5" />
                       <span>My Vehicles</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -150,8 +153,9 @@ export default function PaymentsList() {
                     <SidebarMenuButton 
                       onClick={() => navigate("/payments")}
                       isActive={true}
+                      className="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl shadow-lg transition-all duration-300 p-4"
                     >
-                      <CreditCard className="h-4 w-4" />
+                      <CreditCard className="h-5 w-5" />
                       <span>Payments</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -160,11 +164,14 @@ export default function PaymentsList() {
             </SidebarGroup>
           </SidebarContent>
           
-          <SidebarFooter>
+          <SidebarFooter className="border-t border-blue-700/50 bg-gradient-to-r from-red-700/80 to-orange-700/80 backdrop-blur-sm p-4">
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => signOut()}>
-                  <LogOut className="h-4 w-4" />
+                <SidebarMenuButton 
+                  onClick={() => signOut()}
+                  className="text-blue-100 hover:bg-red-500/30 hover:text-white rounded-xl transition-all duration-300 p-4"
+                >
+                  <LogOut className="h-5 w-5" />
                   <span>Sign Out</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -173,9 +180,9 @@ export default function PaymentsList() {
         </Sidebar>
         
         <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-            <SidebarTrigger className="-ml-1" />
-            <div className="font-semibold">Payment History</div>
+          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-white shadow-sm">
+            <SidebarTrigger className="-ml-1 hover:bg-gray-100 rounded-lg transition-colors" />
+            <div className="font-semibold text-lg">Payment History</div>
           </header>
           <main className="flex-1 overflow-auto p-4">
             <div className="container mx-auto py-8">

@@ -33,31 +33,39 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="border-b bg-card">
+    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-lg">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <Link 
             to={user ? (user.role === "ADMIN" ? "/admin" : user.role === "OPERATOR" ? "/employee" : "/dashboard") : "/"} 
-            className="flex items-center gap-2 font-bold text-xl"
+            className="flex items-center gap-2 font-bold text-xl transition-transform hover:scale-105"
           >
-            <Car className="h-6 w-6 text-primary" />
-            <span className="bg-gradient-hero bg-clip-text text-transparent">ParkEase</span>
+            <div className="p-2 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 shadow-lg">
+              <Car className="h-6 w-6 text-white" />
+            </div>
+            <span className="gradient-text-animated">ParkEase</span>
           </Link>
 
           {/* Mobile menu button */}
           <button 
-            className="md:hidden flex items-center justify-center p-2 rounded-md text-foreground hover:bg-secondary"
+            className="md:hidden flex items-center justify-center p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-all shadow-sm"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle navigation menu"
           >
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-1">
             <Link to="/" onClick={handleHomeClick}>
               <Button 
                 variant={isActive("/") ? "default" : "ghost"}
                 size="sm"
+                className={`transition-all duration-300 ${
+                  isActive("/") 
+                    ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg" 
+                    : "hover:bg-gray-100 hover:shadow-sm"
+                }`}
               >
                 Home
               </Button>
@@ -66,8 +74,13 @@ const Navbar = () => {
               <Button 
                 variant={isActive("/spaces/available") || isActive("/spaces/available/public") ? "default" : "ghost"}
                 size="sm"
+                className={`transition-all duration-300 ${
+                  isActive("/spaces/available") || isActive("/spaces/available/public") 
+                    ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg" 
+                    : "hover:bg-gray-100 hover:shadow-sm"
+                }`}
               >
-                Available Parking
+                Parking
               </Button>
             </Link>
             {user ? (
@@ -75,6 +88,7 @@ const Navbar = () => {
                 variant="ghost" 
                 size="sm" 
                 onClick={signOut}
+                className="hover:bg-red-100 hover:text-red-600 transition-all hover:shadow-sm"
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
@@ -82,8 +96,8 @@ const Navbar = () => {
             ) : (
               <Link to="/auth">
                 <Button 
-                  variant="default"
                   size="sm"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-xl hover:scale-105 transition-all"
                 >
                   Sign In
                 </Button>
@@ -94,7 +108,7 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t">
+          <div className="md:hidden py-4 border-t border-gray-100 animate-slideInDown bg-white rounded-b-xl shadow-lg">
             <div className="flex flex-col gap-2">
               <Link 
                 to="/" 
@@ -105,7 +119,11 @@ const Navbar = () => {
               >
                 <Button 
                   variant={isActive("/") ? "default" : "ghost"}
-                  className="w-full justify-start"
+                  className={`w-full justify-start transition-all ${
+                    isActive("/") 
+                      ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white" 
+                      : ""
+                  }`}
                 >
                   Home
                 </Button>
@@ -116,7 +134,11 @@ const Navbar = () => {
               >
                 <Button 
                   variant={isActive("/spaces/available") || isActive("/spaces/available/public") ? "default" : "ghost"}
-                  className="w-full justify-start"
+                  className={`w-full justify-start transition-all ${
+                    isActive("/spaces/available") || isActive("/spaces/available/public") 
+                      ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white" 
+                      : ""
+                  }`}
                 >
                   Available Parking
                 </Button>
@@ -124,7 +146,7 @@ const Navbar = () => {
               {user ? (
                 <Button 
                   variant="ghost" 
-                  className="w-full justify-start"
+                  className="w-full justify-start hover:bg-red-100 hover:text-red-600"
                   onClick={() => {
                     signOut();
                     setIsMenuOpen(false);
@@ -139,8 +161,7 @@ const Navbar = () => {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <Button 
-                    variant="default"
-                    className="w-full justify-start"
+                    className="w-full justify-start bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg"
                   >
                     Sign In
                   </Button>
