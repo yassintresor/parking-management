@@ -43,7 +43,7 @@ const Navbar = () => {
             <div className="p-2 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 shadow-lg">
               <Car className="h-6 w-6 text-white" />
             </div>
-            <span className="gradient-text-animated">ParkEase</span>
+            <span className="gradient-text">ParkEase</span>
           </Link>
 
           {/* Mobile menu button */}
@@ -108,7 +108,7 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-100 animate-slideInDown bg-white rounded-b-xl shadow-lg">
+          <div className="md:hidden py-4 border-t border-gray-100 bg-white rounded-b-xl shadow-lg">
             <div className="flex flex-col gap-2">
               <Link 
                 to="/" 

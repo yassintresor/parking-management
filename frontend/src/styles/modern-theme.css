@@ -95,23 +95,9 @@ button:active::before {
   box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
 }
 
-/* Gradient text animation */
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.gradient-text-animated {
+/* Gradient text */
+.gradient-text {
   background: linear-gradient(90deg, #0066ff, #7c3aed, #0066ff);
-  background-size: 200% 200%;
-  animation: gradientShift 3s ease infinite;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -129,38 +115,6 @@ button:active::before {
 
 .float {
   animation: float 3s ease-in-out infinite;
-}
-
-/* Fade in animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fadeIn {
-  animation: fadeIn 1s ease-out;
-}
-
-/* Slide in right animation */
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.animate-slideInRight {
-  animation: slideInRight 1s ease-out;
 }
 
 /* Pulse effect */
@@ -390,10 +344,6 @@ label {
   }
 }
 
-.animate-slideInDown {
-  animation: slideInDown 0.3s ease-out;
-}
-
 /* Shadow utilities */
 .shadow-softer {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
@@ -405,10 +355,6 @@ label {
 
 .shadow-xl {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-}
-
-.shadow-2xl {
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
 }
 
 /* Print styles */
